@@ -18,10 +18,10 @@ class Stock:
             soup = BeautifulSoup(response.text.replace("加到投資組合", ""), "lxml")
 
             stock_date = soup.find(
-                "font", {"class": "tt"}).getText().strip()[-9:]
+                "font", {"class": "tt"}).getText().strip()[-9:]  # 資料日期
 
-            tables = soup.find_all("table")[2]
-            tds = tables.find_all("td")[0:11]
+            tables = soup.find_all("table")[2]  # 取得網頁中第三個表格
+            tds = tables.find_all("td")[0:11]  # 取得表格中1到10格
 
             result.append((stock_date,) +
                           tuple(td.getText().strip() for td in tds))
@@ -65,5 +65,5 @@ class Stock:
             print("Exception:", ex)
 
 
-stock = Stock('2451', '2454')
-stock.save(stock.scrape())
+stock = Stock('2451', '2454')  # 初始化
+stock.save(stock.scrape())  # 將爬取的結果存入MySQL資料庫中
