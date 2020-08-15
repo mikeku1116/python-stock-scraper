@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import pymysql
 import openpyxl
+from openpyxl.styles import Font
 
 
 class Stock:
@@ -78,8 +79,13 @@ class Stock:
         titles = ("資料日期",) + tuple(th.getText() for th in ths)
         sheet.append(titles)
 
-        for stock in stocks:
+        for index, stock in enumerate(stocks):
             sheet.append(stock)
+
+            if "△" in stock[6]:
+                sheet.cell(row=index+2, column=7).font = Font(color='FF0000')
+            elif "▽" in stock[6]:
+                sheet.cell(row=index+2, column=7).font = Font(color='00A600')
 
         wb.save("yahoostock.xlsx")
 
