@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import pymysql
+import openpyxl
 
 
 class Stock:
@@ -64,6 +65,25 @@ class Stock:
         except Exception as ex:
             print("Exception:", ex)
 
+    def export(self, stocks):
+        wb = openpyxl.Workbook()
+        sheet = wb.create_sheet("Yahoo股市", 0)
 
-stock = Stock('2451', '2454')  # 初始化
-stock.save(stock.scrape())  # 將爬取的結果存入MySQL資料庫中
+        response = requests.get(
+            "https://tw.stock.yahoo.com/q/q?s=2451")
+        soup = BeautifulSoup(response.text, "lxml")
+
+        tables = soup.find_all("table")[2]
+        ths = tables.find_all("th")[0:11]
+        titles = ("資料日期",) + tuple(th.getText() for th in ths)
+        sheet.append(titles)
+
+        for stock in stocks:
+            sheet.append(stock)
+
+        wb.save("yahoostock.xlsx")
+
+
+stock = Stock('2451', '2454', '2369')  # 建立Stock物件
+stock.export(stock.scrape())  # 將爬取的結果匯出成Excel檔案
+# stock.save(stock.scrape())  # 將爬取的結果存入MySQL資料庫中
