@@ -12,6 +12,7 @@ requests = "*"
 pylint = "*"
 lxml = "*"
 pymysql = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.8"
