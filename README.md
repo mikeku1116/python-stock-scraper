@@ -4,7 +4,7 @@
 
 本專案以Yahoo奇摩股市為例，利用Python網頁爬蟲取得關注的股票當日行情，並且動態的存入MySQL資料庫中，可以搭配[[Python爬蟲教學]輕鬆學會Python網頁爬蟲與MySQL資料庫的整合方式](https://www.learncodewithmike.com/2020/08/python-scraper-integrate-with-mysql.html)部落格文章來進行學習。
 
-另外，本專案也整合openpyxl套件，提供將Python網頁爬蟲所取得的股票當日行情資料，匯出成Excel檔案，並且在其中的漲跌欄位，客製化顯示儲存格的文字顏色，可以搭配[[Python爬蟲教學]輕鬆學會Python網頁爬蟲與MySQL資料庫的整合方式](https://www.learncodewithmike.com/2020/08/python-scraper-integrate-with-mysql.html)部落格文章來進行學習。
+另外，本專案也整合openpyxl套件，提供將Python網頁爬蟲所取得的股票當日行情資料，匯出成Excel檔案，並且在其中的漲跌欄位，客製化顯示儲存格的文字顏色，可以搭配[[Python爬蟲教學]活用openpyxl套件將爬取的資料寫入Excel檔案](https://www.learncodewithmike.com/2020/08/python-write-to-an-excel-file-using-openpyxl-module.html)部落格文章來進行學習。
 
 ## 前置作業 ##
 
@@ -20,4 +20,4 @@
 
 `$ pipenv shell`
 
-最後，安裝MySQL資料庫，並且依照[[Python爬蟲教學]活用openpyxl套件將爬取的資料寫入Excel檔案](https://www.learncodewithmike.com/2020/08/python-write-to-an-excel-file-using-openpyxl-module.html)部落格文章來建立相關的資料表欄位，以及在scraper.py檔案中，設定MySQL資料庫的密碼，即可執行範例程式。
+最後，安裝MySQL資料庫，並且依照[[Python爬蟲教學]輕鬆學會Python網頁爬蟲與MySQL資料庫的整合方式](https://www.learncodewithmike.com/2020/08/python-scraper-integrate-with-mysql.html)部落格文章來建立相關的資料表欄位，以及在scraper.py檔案中，設定MySQL資料庫的密碼，即可執行範例程式。
