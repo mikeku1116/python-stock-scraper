@@ -3,6 +3,8 @@ import requests
 import pymysql
 import openpyxl
 from openpyxl.styles import Font
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 class Stock:
@@ -89,7 +91,31 @@ class Stock:
 
         wb.save("yahoostock.xlsx")
 
+    def gsheet(self, stocks):
+        scopes = ["https://spreadsheets.google.com/feeds"]
+
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            "credentials.json", scopes)
+
+        client = gspread.authorize(credentials)
+
+        sheet = client.open_by_key(
+            "YOUR GOOGLE SHEET KEY").sheet1
+
+        response = requests.get(
+            "https://tw.stock.yahoo.com/q/q?s=2451")
+        soup = BeautifulSoup(response.text, "lxml")
+
+        tables = soup.find_all("table")[2]
+        ths = tables.find_all("th")[0:11]
+        titles = ("資料日期",) + tuple(th.getText() for th in ths)
+        sheet.append_row(titles, 1)
+
+        for stock in stocks:
+            sheet.append_row(stock)
+
 
 stock = Stock('2451', '2454', '2369')  # 建立Stock物件
-stock.export(stock.scrape())  # 將爬取的結果匯出成Excel檔案
+stock.gsheet(stock.scrape())  # 將爬取的果寫入Google Sheet工作表
+# stock.export(stock.scrape())  # 將爬取的結果匯出成Excel檔案
 # stock.save(stock.scrape())  # 將爬取的結果存入MySQL資料庫中
