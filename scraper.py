@@ -5,6 +5,10 @@ import openpyxl
 from openpyxl.styles import Font
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
 
 class Stock:
@@ -114,8 +118,44 @@ class Stock:
         for stock in stocks:
             sheet.append_row(stock)
 
+    def daily(self, year, month):
+        browser = webdriver.Chrome(ChromeDriverManager().install())
+        browser.get(
+            "https://www.twse.com.tw/zh/page/trading/exchange/STOCK_DAY_AVG.html")
+
+        select_year = Select(browser.find_element_by_name("yy"))
+        select_year.select_by_value(year)  # 選擇傳入的年份
+
+        select_month = Select(browser.find_element_by_name("mm"))
+        select_month.select_by_value(month)  # 選擇傳入的月份
+
+        stockno = browser.find_element_by_name("stockNo")  # 定位股票代碼輸入框
+
+        result = []
+        for stock_number in self.stock_numbers:
+            stockno.clear()  # 清空股票代碼輸入框
+            stockno.send_keys(stock_number)
+            stockno.submit()
+
+            time.sleep(2)
+
+            soup = BeautifulSoup(browser.page_source, "lxml")
+
+            table = soup.find("table", {"id": "report-table"})
+
+            elements = table.find_all(
+                "td", {"class": "dt-head-center dt-body-center"})
+
+            data = (stock_number,) + tuple(element.getText()
+                                           for element in elements)
+            result.append(data)
+
+        print(result)
+
 
 stock = Stock('2451', '2454', '2369')  # 建立Stock物件
-stock.gsheet(stock.scrape())  # 將爬取的果寫入Google Sheet工作表
-# stock.export(stock.scrape())  # 將爬取的結果匯出成Excel檔案
-# stock.save(stock.scrape())  # 將爬取的結果存入MySQL資料庫中
+stock.daily("2019", "7")  # 動態爬取指定的年月份中，股票代碼的每日收盤價
+
+# stock.gsheet(stock.scrape())  # 將爬取的股票當日行情資料寫入Google Sheet工作表
+# stock.export(stock.scrape())  # 將爬取的股票當日行情資料匯出成Excel檔案
+# stock.save(stock.scrape())  # 將爬取的股票當日行情資料存入MySQL資料庫中
